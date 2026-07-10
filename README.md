@@ -26,8 +26,19 @@ Para la empresa VZeta, implementar el stack de servicios utilizando Docker y Doc
 ---
 
 ## 2. Descripción de la Arquitectura
+El stack está diseñado bajo un modelo de tres capas microserviciadas interconectadas en una red aislada tipo `bridge`:
+`Cliente ── HTTP:80 ──> [ mynginx_container ] ──> [ myapp_container ] ──> [ db_container ]`
 
-El despliegue del stack se estructura mediante una topología multi-capa aislada dentro del Host de la siguiente forma:
+1. **mynginx_container (Puerto 80):** Reverse Proxy encargado de interceptar las peticiones externas, protegiendo y aislando los servidores de aplicación subyacentes.
+2. **myapp_container (Puerto 5000):** Aplicación monolítica liviana construida sobre `python:3-slim` mediante Flask. Procesa la lógica de negocio y registra métricas.
+3. **db_container (Puerto 5432):** Motor relacional PostgreSQL encargado del almacenamiento persistente mediante un volumen mapeado en el sistema de archivos del Host.
+
+---
+
+## 3. Procedimiento de Despliegue Paso a Paso
+1. Actualizar repositorios e instalar dependencias en la máquina:
+   ```bash
+   sudo apt-get update && sudo apt-get install -y docker.io docker-compose-plugin
 
 ```text
 Cliente ── HTTP:80 ──> [ mynginx_container ] ──> [ myapp_container ] ──> [ db_container ]
